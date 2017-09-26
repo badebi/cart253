@@ -62,7 +62,7 @@ void draw() {
 }
 
 //This functionis called when the mouse botton goes down and it's gonna fill the window with background color 
-//as if we erase all the shit!
+//as if we erase all the shit ! 
 void mousePressed() {
   background(BACKGROUND_COLOR);
 }
