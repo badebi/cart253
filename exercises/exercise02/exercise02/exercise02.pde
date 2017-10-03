@@ -23,11 +23,15 @@ int ballSpeed = 5;
 int ballSize = 16;
 color ballColor = color(255);
 
+//CHANGED 
+//String ballType; 
+String varBallType;
+
 // Sets up the the existance of everything we need. 
 // We've used differenet setups for different elements so the program is much easier to read and more organized
 void setup() {
   size(640, 480);
-  
+
   setupPaddle();
   setupBall();
 }
@@ -44,6 +48,9 @@ void setupBall() {
   ballY = height/2;
   ballVX = ballSpeed;
   ballVY = ballSpeed;
+
+  //CHANGED
+  varBallType = "rect";
 }
 
 // Draws the the ball, Paddle and background effects and updates them each frame.
@@ -57,16 +64,17 @@ void draw() {
 
   drawPaddle();
   drawBall();
+  
 }
 
 // when it's called, draws 1000 random squares with random sizes (either 1, 2 r 3 pixles) in a frame
 void drawStatic() {
   for (int i = 0; i < numStatic; i++) {
-   float x = random(0,width);
-   float y = random(0,height);
-   float staticSize = random(staticSizeMin,staticSizeMax);
-   fill(staticColor);
-   rect(x,y,staticSize,staticSize);
+    float x = random(0, width);
+    float y = random(0, height);
+    float staticSize = random(staticSizeMin, staticSizeMax);
+    fill(staticColor);
+    rect(x, y, staticSize, staticSize);
   }
 }
 
@@ -74,7 +82,7 @@ void drawStatic() {
 void updatePaddle() {
   paddleX += paddleVX;
   // It limits the Paddles movement inside the window 
-  paddleX = constrain(paddleX,0+paddleWidth/2,width-paddleWidth/2);
+  paddleX = constrain(paddleX, 0+paddleWidth/2, width-paddleWidth/2);
 }
 
 // to make the ball move and limits it's movement within the window and makes it reset from the center when it goes off screen from the bottom
@@ -82,7 +90,7 @@ void updatePaddle() {
 void updateBall() {
   ballX += ballVX;
   ballY += ballVY;
-  
+
   handleBallHitPaddle();
   handleBallHitWall();
   handleBallOffBottom();
@@ -98,10 +106,25 @@ void drawPaddle() {
 
 // Draws the Ball
 void drawBall() {
-  rectMode(CENTER);
+  //rectMode(CENTER);
+  //noStroke();
+  //fill(ballColor);
+  //rect(ballX, ballY, ballSize, ballSize);
+  ballType(); //CHANGED
+}
+
+//CHANGED the thing it does is it's gonna change the shape of the ball each time it hits the paddle
+void ballType() {
   noStroke();
   fill(ballColor);
-  rect(ballX, ballY, ballSize, ballSize);
+
+  if (varBallType == "ellipse") {
+    ellipseMode(CENTER);
+    ellipse(ballX, ballY, ballSize, ballSize);
+  } else if (varBallType == "rect") {
+    rectMode(CENTER);
+    rect(ballX, ballY, ballSize, ballSize);
+  }
 }
 
 // it makes the ball bounce when it touches the paddle
@@ -110,6 +133,13 @@ void handleBallHitPaddle() {
     // to have a good looking bounce from the paddle
     ballY = paddleY - paddleHeight/2 - ballSize/2;
     ballVY = -ballVY;
+
+    //CHANGED it checks if it's drawing a rectangle ot an ellipse so it can change it for the next time
+    if (varBallType == "rect") {
+      varBallType= "ellipse";
+    } else if (varBallType == "ellipse") { 
+      varBallType= "rect";
+    }
   }
 }
 
@@ -149,7 +179,7 @@ void handleBallHitWall() {
     ballX = width - ballSize/2;
     ballVX = -ballVX;
   }
-  
+
   if (ballY - ballSize/2 < 0) {
     ballY = 0 + ballSize/2;
     ballVY = -ballVY;
@@ -160,8 +190,23 @@ void handleBallHitWall() {
 void keyPressed() {
   if (keyCode == LEFT) {
     paddleVX = -paddleSpeed;
+  
   } else if (keyCode == RIGHT) {
     paddleVX = paddleSpeed;
+  }
+  
+  //CHANGED it increases the velocity of the ball when you press spacebar when it hits the paddle
+  //CHANGED and also the paddle jumps up ... and by holding the spacebar... its gonna go higher to make the game much harder
+ 
+  if (keyCode == 32){
+    paddleY -= paddleHeight;
+   if (ballOverlapsPaddle()) {
+     ballVX *= 1.3;
+     ballVY *= 1.3;
+   }
+   if (keyCode == DOWN){
+     paddleY = height - paddleHeight;
+   }
   }
 }
 
@@ -173,5 +218,10 @@ void keyReleased() {
     paddleVX = 0;
   } else if (keyCode == RIGHT && paddleVX > 0) {
     paddleVX = 0;
+  }
+  
+  //CHANGED to bring the paddle back to it's first Y position ... but I don't know why it doesn't work
+  if (keyCode == 32){
+    paddleY += paddleHeight;
   }
 }
