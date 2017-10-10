@@ -25,8 +25,18 @@ void draw() {
   bouncer.draw();
   bouncer2.draw();
 }
-
+//CHANGED called after a mouse button has been pressed and then released
 void mouseClicked(){
   bouncer.mouseClicked();
   bouncer2.mouseClicked();
+}
+
+void mousePressed(){
+  bouncer.draw();
+  bouncer2.draw();
+}
+
+void mouseReleased(){
+  bouncer.mouseReleased();
+  bouncer2.mouseReleased();
 }
