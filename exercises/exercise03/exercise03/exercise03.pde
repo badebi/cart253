@@ -1,3 +1,5 @@
+//Exercise 03 code
+
 // Basically this program shows two balls, red and blue, which move symmetrically inside the window.
 // (you can see the trace of their movement as well)
 // And if you hover the mouse one each ball, their color is gonna change
