@@ -12,6 +12,10 @@ class Paddle {
   int HEIGHT = 70;
   int WIDTH = 16;
 
+  //
+  int initialX;
+  int initialY;
+  
   // The position and velocity of the paddle (note that vx isn't really used right now)
   int x;
   int y;
@@ -38,6 +42,9 @@ class Paddle {
     y = _y;
     vx = 0;
     vy = 0;
+    
+    initialX = _x;
+    initialY = _y;
 
     upKey = _upKey;
     downKey = _downKey;
@@ -57,6 +64,12 @@ class Paddle {
 
     // Constrain the paddle's y position to be in the window
     y = constrain(y,0 + HEIGHT/2,height - HEIGHT/2);
+  }
+  
+  //
+  void reset() {
+    x = initialX;
+    y = initialY;
   }
 
   // display()

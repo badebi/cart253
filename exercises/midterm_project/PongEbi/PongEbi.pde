@@ -15,7 +15,7 @@ Paddle rightPaddle;
 Ball ball;
 
 //
-Score PlayerScores;
+Score score;
 
 
 // The distance from the edge of the window a paddle should be
@@ -45,7 +45,7 @@ void setup() {
   ball = new Ball(width/2, height/2);
   
   //
-  PlayerScores = new Score();
+  score = new Score();
 
 }
 
@@ -55,6 +55,8 @@ void setup() {
 // if the ball has hit a paddle, and displaying everything.
 
 void draw() {
+  if (score.scoreRight < 11 && score.scoreLeft < 11) {
+  
   // Fill the background each frame so we have animation
   background(backgroundColor);
 
@@ -64,7 +66,7 @@ void draw() {
   ball.update();
   
   //
-  PlayerScores.update();
+  score.update();
 
 
   // Check if the ball has collided with either paddle
@@ -83,7 +85,20 @@ void draw() {
   ball.display();
   
   //
-  PlayerScores.display();
+  score.display();
+  }
+  else {
+     background(backgroundColor); 
+     score.winner();
+     
+     leftPaddle.update();
+     rightPaddle.update();
+     
+     leftPaddle.display();
+     rightPaddle.display();
+ 
+     score.keyPressed();
+}
 }
 
 // keyPressed()

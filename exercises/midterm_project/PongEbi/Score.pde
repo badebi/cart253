@@ -5,7 +5,8 @@ class Score {
   int scoreRight;
   int scoreLeft;
   
-  PFont f;
+  PFont scoreFont;
+  PFont winerFont;
   
   Score(){
    
@@ -14,7 +15,8 @@ class Score {
     scoreLeft=0;
     
     //
-    f = createFont("Arial",32,true);
+    scoreFont = createFont("Arial",32,true);
+    winerFont = createFont("Arial",52,true);
   }
   
   
@@ -42,11 +44,36 @@ class Score {
   // 
   
   void display() {
-    textFont (f);
+    textFont (scoreFont);
+    textAlign (CENTER);
     text (scoreLeft,width/4,42);
-    
-    text (scoreRight,(3 * width/4) - 16,42);
+    text (scoreRight,(3 * width/4),42);
 
   }
+  
+  void winner() {
+    textFont (winerFont);
+    textAlign (CENTER);
+    if (scoreLeft == 11) {
+      text ("YOU WIN", width/4,height/2);
+      text ("YOU LOSE", 3 * width/4,height/2);
+    } else if (scoreRight == 11) {
+      text ("YOU WIN", 3 * width/4,height/2);
+      text ("YOU LOSE", width/4,height/2);
+    }
+  }
+  
+  void keyPressed() {
+    if (key == ENTER || key == RETURN) {
+      ball.reset();
+      leftPaddle.reset();
+      rightPaddle.reset();
+      
+      scoreLeft=0;
+      scoreRight=0;
+      
+    }
+  }
+    
   
 }
