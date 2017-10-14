@@ -21,6 +21,9 @@ class Ball {
 
   // The colour of the ball
   color ballColor = color(255);
+  
+  //
+  String offScreenDirection;
 
 
   /////////////// Constructor ///////////////
@@ -81,7 +84,15 @@ class Ball {
   // or a String (e.g. "ON SCREEN", "OFF LEFT", "OFF RIGHT")
   
   boolean isOffScreen() {
-    return (x + SIZE/2 < 0 || x - SIZE/2 > width);
+    if (x + SIZE/2 < 0){
+      offScreenDirection = "OFF LEFT" ;
+      return (true); 
+    } else if (x - SIZE/2 > width){
+      offScreenDirection = "OFF RIGHT";
+      return (true);
+    } else {
+      return (false);
+    }
   }
 
   // collide(Paddle paddle)

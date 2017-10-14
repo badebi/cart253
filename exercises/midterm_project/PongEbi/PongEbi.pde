@@ -14,6 +14,10 @@ Paddle leftPaddle;
 Paddle rightPaddle;
 Ball ball;
 
+//
+Score PlayerScores;
+
+
 // The distance from the edge of the window a paddle should be
 int PADDLE_INSET = 8;
 
@@ -39,6 +43,10 @@ void setup() {
 
   // Create the ball at the centre of the screen
   ball = new Ball(width/2, height/2);
+  
+  //
+  PlayerScores = new Score();
+
 }
 
 // draw()
@@ -54,6 +62,10 @@ void draw() {
   leftPaddle.update();
   rightPaddle.update();
   ball.update();
+  
+  //
+  PlayerScores.update();
+
 
   // Check if the ball has collided with either paddle
   ball.collide(leftPaddle);
@@ -69,6 +81,9 @@ void draw() {
   leftPaddle.display();
   rightPaddle.display();
   ball.display();
+  
+  //
+  PlayerScores.display();
 }
 
 // keyPressed()
