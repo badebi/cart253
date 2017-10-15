@@ -8,7 +8,7 @@ class Ball {
   /////////////// Properties ///////////////
 
   // Default values for speed and size
-  int SPEED = 5;
+  int SPEED = 7;
   int SIZE = 16;
 
   // The location of the ball
@@ -131,9 +131,9 @@ class Ball {
     // Set up the appearance of the ball (no stroke, a fill, and rectMode as CENTER)
     noStroke();
     fill(ballColor);
-    rectMode(CENTER);
+    ellipseMode(CENTER);
 
     // Draw the ball
-    rect(x, y, SIZE, SIZE);
+    ellipse(x, y, SIZE, SIZE);
   }
 }
