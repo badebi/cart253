@@ -24,6 +24,9 @@ class Ball {
   
   //
   String offScreenDirection;
+  
+  //
+  boolean jumping = false;
 
 
   /////////////// Constructor ///////////////
@@ -101,7 +104,7 @@ class Ball {
   // If it is, it makes the ball bounce away from the paddle by reversing its
   // x velocity
 
-  void collide(Paddle paddle) {
+  boolean collide(Paddle paddle) {
     // Calculate possible overlaps with the paddle side by side
     boolean insideLeft = (x + SIZE/2 > paddle.x - paddle.WIDTH/2);
     boolean insideRight = (x - SIZE/2 < paddle.x + paddle.WIDTH/2);
@@ -120,9 +123,42 @@ class Ball {
       }
       // And make it bounce
       vx = -vx;
+      //jumping = false;
+      return (true);
     }
+    return (false);
   }
 
+  //
+  
+  void jump(){
+    
+    int distance = 120 - floor(dist(x,y,width/2,y)/(width/2) * 100);
+    SIZE = distance;
+    
+    //if (vx > 0){
+    //  if (x < (3/8) * width){
+    //  SIZE = 50;
+    //  SIZE = constrain(SIZE,16,100);
+    //  }
+    //  else if (x > (5/8) * width){
+    //  SIZE--;
+    //  SIZE = constrain(SIZE,16,100);
+    //  } 
+    //}
+    //if (vx < 0){
+    //  if (x > (5/8) * width){
+    //  SIZE = 50;
+    //  SIZE = constrain(SIZE,16,100);
+    //  }
+    //  else if ( x < (3/8) * width){
+    //  SIZE--;
+    //  SIZE = constrain(SIZE,16,100);
+    //  } 
+    //}
+  }
+  
+  
   // display()
   //
   // Draw the ball at its position
@@ -135,5 +171,11 @@ class Ball {
 
     // Draw the ball
     ellipse(x, y, SIZE, SIZE);
+    if (jumping){
+    int distance = 120 - floor(dist(x,y,width/2,y)/(width/2) * 100);
+    SIZE = distance;
+    } else {
+    SIZE = 16;
+  }
   }
 }

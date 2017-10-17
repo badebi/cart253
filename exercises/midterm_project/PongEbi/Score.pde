@@ -58,7 +58,6 @@ class Score {
     text (scoreRight, width/2, (3*ball.SIZE + (scoreRight * ball.SIZE)));
     
     wallScore();
-
   }
   
   void winner() {
@@ -93,6 +92,7 @@ class Score {
   }
   
   void wallBounce() {
+    if (!ball.jumping){
     if (scoreLeft != 0) {
     // Calculate possible overlaps with the paddle side by side
     boolean downInsideLeft = (ball.x + ball.SIZE/2 > width/2 - ball.SIZE/2);
@@ -135,7 +135,10 @@ class Score {
       ball.vx = -ball.vx;
     }
     }
+    }
   }
+  
+  
   
   void keyPressed() {
     if (key == ENTER || key == RETURN) {

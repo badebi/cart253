@@ -28,6 +28,9 @@ class Paddle {
   // The characters used to make the paddle move up and down, defined in constructor
   char upKey;
   char downKey;
+  
+  //
+  char jumpKey;
 
 
   /////////////// Constructor ///////////////
@@ -37,7 +40,7 @@ class Paddle {
   // Sets the position and controls based on arguments,
   // starts the velocity at 0
 
-  Paddle(int _x, int _y, char _upKey, char _downKey, color _paddleColor) {
+  Paddle(int _x, int _y, char _upKey, char _downKey, char _jumpKey, color _paddleColor) {
     x = _x;
     y = _y;
     vx = 0;
@@ -50,6 +53,9 @@ class Paddle {
 
     upKey = _upKey;
     downKey = _downKey;
+    
+    //
+    jumpKey = _jumpKey;
   }
 
 
@@ -101,6 +107,16 @@ class Paddle {
     else if (key == downKey) {
       // If so we want a positive y velocity
       vy = SPEED;
+    } else if (key == jumpKey && jumpKey == '9'){
+      rightPaddle.x= rightPaddle.x - WIDTH/2; 
+      if (ball.collide(rightPaddle)) {
+      ball.jumping = true;
+      }
+    } else if (key == jumpKey && jumpKey == '2'){
+      leftPaddle.x= leftPaddle.x + WIDTH/2; 
+      if (ball.collide(leftPaddle)) {
+      ball.jumping = true;
+      }
     }
   }
 
@@ -117,6 +133,16 @@ class Paddle {
     else if (key == downKey && vy > 0) {
       // If so it should stop
       vy = 0;
+    } else if (key == jumpKey && jumpKey == '9'){
+      rightPaddle.x= rightPaddle.x + WIDTH/2; 
+      if (ball.collide(rightPaddle)) {
+      ball.jumping = false;
+      }
+    } else if (key == jumpKey && jumpKey == '2'){
+      leftPaddle.x= leftPaddle.x - WIDTH/2; 
+      if (ball.collide(leftPaddle)) {
+      ball.jumping = false;
+      }
     }
   }
 }
