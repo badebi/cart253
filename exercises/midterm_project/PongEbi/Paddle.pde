@@ -72,10 +72,19 @@ class Paddle {
 
     // Constrain the paddle's y position to be in the window
     y = constrain(y,0 + HEIGHT/2,height - HEIGHT/2);
+    
+    //
+    if (screenSizeChanged) {
+      SPEED = 8;
+    }
   }
   
   //
   void reset() {
+    
+    windowWidth = 864;
+    surface.setSize (windowWidth,windowHeight);
+
     x = initialX;
     y = initialY;
   }
@@ -108,15 +117,15 @@ class Paddle {
       // If so we want a positive y velocity
       vy = SPEED;
     } else if (key == jumpKey && jumpKey == '9'){
-      rightPaddle.x= rightPaddle.x - WIDTH/2; 
-      if (ball.collide(rightPaddle)) {
-      ball.jumping = true;
-      }
+        rightPaddle.x= rightPaddle.x - WIDTH/2; 
+        //if (ball.collide(rightPaddle)) {
+        //  ball.jumping = true;
+        //}
     } else if (key == jumpKey && jumpKey == '2'){
-      leftPaddle.x= leftPaddle.x + WIDTH/2; 
-      if (ball.collide(leftPaddle)) {
-      ball.jumping = true;
-      }
+        leftPaddle.x= leftPaddle.x + WIDTH/2; 
+        //if (ball.collide(leftPaddle)) {
+        //  ball.jumping = true;
+        //}
     }
   }
 
@@ -135,14 +144,18 @@ class Paddle {
       vy = 0;
     } else if (key == jumpKey && jumpKey == '9'){
       rightPaddle.x= rightPaddle.x + WIDTH/2; 
-      if (ball.collide(rightPaddle)) {
-      ball.jumping = false;
-      }
+      //if (ball.collide(rightPaddle)) {
+      //ball.jumping = true;
+      //}
     } else if (key == jumpKey && jumpKey == '2'){
       leftPaddle.x= leftPaddle.x - WIDTH/2; 
-      if (ball.collide(leftPaddle)) {
-      ball.jumping = false;
-      }
+      //if (ball.collide(leftPaddle)) {
+      //ball.jumping = true;
+      //}
     }
+  }
+  
+  void replacePaddle() {
+    x = windowWidth - PADDLE_INSET;
   }
 }

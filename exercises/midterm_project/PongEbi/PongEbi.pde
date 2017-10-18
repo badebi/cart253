@@ -28,7 +28,8 @@ color backgroundColor = color(0);
 int windowWidth = 864;
 int windowHeight = 480;
 
-
+//
+boolean screenSizeChanged = false;
 
 // setup()
 //
@@ -44,8 +45,8 @@ void setup() {
   // Also pass through the two keys used to control 'up' and 'down' respectively
   // NOTE: On a mac you can run into trouble if you use keys that create that popup of
   // different accented characters in text editors (so avoid those if you're changing this)
-  leftPaddle = new Paddle(PADDLE_INSET, height/2, '1', 'q', '2', #FF0000);
-  rightPaddle = new Paddle(width - PADDLE_INSET, height/2, '0', 'p', '9', #0000FF);
+  leftPaddle = new Paddle(PADDLE_INSET, windowHeight/2, '1', 'q', '2', #FF0000);
+  rightPaddle = new Paddle(windowWidth - PADDLE_INSET, windowHeight/2, '0', 'p', '9', #0000FF);
 
   // Create the ball at the centre of the screen
   ball = new Ball(width/2, height/2);
@@ -61,7 +62,7 @@ void setup() {
 // if the ball has hit a paddle, and displaying everything.
 
 void draw() {
-  if (score.scoreRight < 11 && score.scoreLeft < 11) {
+  if (score.scoreRight < score.winnerScore && score.scoreLeft < score.winnerScore) {
   
   // Fill the background each frame so we have animation
   background(backgroundColor);
@@ -94,10 +95,13 @@ void draw() {
   score.display();
   
   //
-  if (score.scoreRight > 5 || score.scoreLeft >5 ){
+  if (score.scoreRight > floor(score.winnerScore / 2) || score.scoreLeft > floor(score.winnerScore / 2) ){
     surface.setSize (windowWidth,windowHeight);
     windowWidth --;
     windowWidth = constrain(windowWidth,680,1080);
+    
+    rightPaddle.replacePaddle();
+    screenSizeChanged = true;
   }
   }
   else {

@@ -8,6 +8,10 @@ class Score {
   PFont scoreFont;
   PFont winerFont;
   
+  int scoreSize;
+  
+  int winnerScore = 13;
+  
   Score(){
    
     //
@@ -17,6 +21,9 @@ class Score {
     //
     scoreFont = createFont("Arial",32,true);
     winerFont = createFont("Arial",52,true);
+    
+    //
+    scoreSize = 16;
   }
   
   
@@ -38,8 +45,10 @@ class Score {
      ball.offScreenDirection = "ON SCREEN";
      }
      
-     //
-     wallBounce();
+     if (screenSizeChanged){
+       rightPaddle.initialX =  windowWidth - PADDLE_INSET;
+     }
+     
   }
 
   // display()
@@ -52,10 +61,10 @@ class Score {
     textAlign (CENTER);
     
     fill(#FF0000);
-    text (scoreLeft, width/2, ((height - (ball.SIZE)) - (scoreLeft * ball.SIZE)) - 9 );
+    text (scoreLeft, width/2 + scoreSize + 12, height - scoreSize - 9);
     
     fill(#0000FF);
-    text (scoreRight, width/2, (3*ball.SIZE + (scoreRight * ball.SIZE)));
+    text (scoreRight, width/2 - scoreSize - 12, (3*scoreSize));
     
     wallScore();
   }
@@ -63,16 +72,16 @@ class Score {
   void winner() {
     textFont (winerFont);
     textAlign (CENTER);
-    if (scoreLeft == 11) {
+    if (scoreLeft == winnerScore) {
       fill(#FF0000);
       text ("YOU WIN", width/4, height/2);
       fill(#0000FF);
       text ("YOU LOSE", 3 * width/4, height/2);
-    } else if (scoreRight == 11) {
+    } else if (scoreRight == winnerScore) {
       fill(#0000FF);
       text ("YOU WIN", 3 * width/4, height/2);
       fill(#FF0000);
-      text ("YOU LOSE", width/4, height/2);
+      text ("YOU LOSE",  width/4, height/2); 
     }
   }
   
@@ -81,12 +90,23 @@ class Score {
     noStroke();
     if (scoreLeft != 0 || scoreRight != 0){
       for (int i=1; i <= scoreLeft; i++){
-        fill(#FF0000);
-        ellipse (width/2, (height - ball.SIZE) - (i * ball.SIZE), ball.SIZE, ball.SIZE);
-    } 
+        
+        int _i = i;
+        _i = constrain(_i, 1, 13);
+        
+        fill(#FF0000); 
+        ellipse (width/2, (height - scoreSize) - (_i * scoreSize), scoreSize, scoreSize);
+        
+        
+        //if (scoreLeft > 13){
+        //  fill(#FF0000); 
+        //  ellipse (width/2 - scoreSize, (height - scoreSize) - ( (i-13) * scoreSize), scoreSize, scoreSize);
+        //}
+        
+          } 
       for (int j=1; j <= scoreRight; j++){
         fill(#0000FF);
-        ellipse (width/2, (0 + ball.SIZE) + (j * ball.SIZE), ball.SIZE, ball.SIZE);
+        ellipse (width/2, (0 + scoreSize) + (j * scoreSize), scoreSize, scoreSize);
     }
   }
   }
@@ -145,6 +165,7 @@ class Score {
       ball.reset();
       leftPaddle.reset();
       rightPaddle.reset();
+      
       
       scoreLeft=0;
       scoreRight=0;

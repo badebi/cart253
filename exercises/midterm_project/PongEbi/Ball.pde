@@ -66,6 +66,9 @@ class Ball {
       // If it is, then make it "bounce" by reversing its velocity
       vy = -vy;
     }
+    
+    //
+     wallBounce();
   }
   
   // reset()
@@ -76,6 +79,8 @@ class Ball {
   void reset() {
     x = width/2;
     y = height/2;
+    
+    jumping = false;
   }
   
   // isOffScreen()
@@ -117,13 +122,23 @@ class Ball {
       if (vx < 0) {
         // Reset its position to align with the right side of the paddle
         x = paddle.x + paddle.WIDTH/2 + SIZE/2;
+        if (leftPaddle.x > leftPaddle.initialX){
+          jumping = true;
+        } else {
+        jumping = false;
+      }
       } else if (vx > 0) {
         // Reset its position to align with the left side of the paddle
         x = paddle.x - paddle.WIDTH/2 - SIZE/2;
+        if (rightPaddle.x < rightPaddle.initialX){
+          jumping = true;
+        } else {
+        jumping = false;
+      }
       }
       // And make it bounce
       vx = -vx;
-      //jumping = false;
+     
       return (true);
     }
     return (false);
@@ -131,31 +146,63 @@ class Ball {
 
   //
   
+  void wallBounce() {
+    if (!ball.jumping){
+    if (score.scoreLeft != 0) {
+      // Calculate possible overlaps with the paddle side by side
+      boolean downInsideLeft = (ball.x + ball.SIZE/2 > width/2 - ball.SIZE/2);
+      boolean downInsideRight = (ball.x - ball.SIZE/2 < width/2 + ball.SIZE/2);
+      boolean downInsideTop = (ball.y + ball.SIZE/2 > (height - ball.SIZE) - (score.scoreLeft * ball.SIZE));
+      boolean downInsideBottom = (ball.y - ball.SIZE/2 < height - ball.SIZE);
+      
+      // Check if the ball overlaps with the paddle
+      if (downInsideLeft && downInsideRight && downInsideTop && downInsideBottom) {
+        // If it was moving to the left
+        if (ball.vx < 0) {
+          // Reset its position to align with the right side of the paddle
+          ball.x =  width/2 + ball.SIZE;
+        } else if (ball.vx > 0) {
+          // Reset its position to align with the left side of the paddle
+          ball.x = width/2 - ball.SIZE;
+        }
+        // And make it bounce
+        ball.vx = -ball.vx;
+      }
+    }
+    if (score.scoreRight != 0){
+      // Calculate possible overlaps with the paddle side by side
+      boolean upInsideLeft = (ball.x + ball.SIZE/2 > width/2 - ball.SIZE/2);
+      boolean upInsideRight = (ball.x - ball.SIZE/2 < width/2 + ball.SIZE/2);
+      boolean upInsideTop = (ball.y + ball.SIZE/2 > ball.SIZE);
+      boolean upInsideBottom = (ball.y - ball.SIZE < ball.SIZE + (score.scoreRight * ball.SIZE));
+      
+      // Check if the ball overlaps with the paddle
+      if (upInsideLeft && upInsideRight && upInsideTop && upInsideBottom) {
+        // If it was moving to the left
+        if (ball.vx < 0) {
+          // Reset its position to align with the right side of the paddle
+          ball.x =  width/2 + ball.SIZE;
+        } else if (ball.vx > 0) {
+          // Reset its position to align with the left side of the paddle
+          ball.x = width/2 - ball.SIZE;
+        }
+        // And make it bounce
+        ball.vx = -ball.vx;
+      }
+    }
+    }
+  }
+  
+  
+  
+  
+  //
+  
   void jump(){
     
     int distance = 120 - floor(dist(x,y,width/2,y)/(width/2) * 100);
     SIZE = distance;
     
-    //if (vx > 0){
-    //  if (x < (3/8) * width){
-    //  SIZE = 50;
-    //  SIZE = constrain(SIZE,16,100);
-    //  }
-    //  else if (x > (5/8) * width){
-    //  SIZE--;
-    //  SIZE = constrain(SIZE,16,100);
-    //  } 
-    //}
-    //if (vx < 0){
-    //  if (x > (5/8) * width){
-    //  SIZE = 50;
-    //  SIZE = constrain(SIZE,16,100);
-    //  }
-    //  else if ( x < (3/8) * width){
-    //  SIZE--;
-    //  SIZE = constrain(SIZE,16,100);
-    //  } 
-    //}
   }
   
   
