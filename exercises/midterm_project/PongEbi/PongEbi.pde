@@ -117,7 +117,7 @@ void draw() {
       windowWidth --;
       // CHANGED // limit the amount of resizing 
       windowWidth = constrain(windowWidth, 680, 1080);
-      
+
       // CHANGED // this if is to change right paddle's location and keeps it in the screen
       if (windowWidth > 680) {
         // CHANGED // so it calls a method in Paddle class which is gonna do it
@@ -130,10 +130,10 @@ void draw() {
   } else {
     // CHANGED // every thing in here is for when the game finishes, which is when one of the players
     // CHANGED // reaches to the final score (winnerScore)
-    background(backgroundColor); 
+    background(0); 
     // CHANGED // calls a method from Score which gonna say who is the winner and who is the looser
     score.winner();
-    
+
     // CHANGED // players still can move their paddles and have fun
     leftPaddle.update();
     rightPaddle.update();
