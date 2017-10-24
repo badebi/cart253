@@ -21,7 +21,11 @@ void setup() {
   frameRate(10);
 
   // QUESTION: What does this for loop do?
+  // ANSWER: it creates a set of griddies (in this case 100 of them) (instantiates multiple griddies if I say it
+  // correctly) and place them in the random place in the different grids based on th gridSize)
   for (int i = 0; i < griddies.length; i++) {
+    // it devids the window to grides and we will have random coordinates for a specific square each time
+    //to place oue griddie in it
     int x = floor(random(0, width/gridSize));
     int y = floor(random(0, height/gridSize));
     griddies[i] = new Griddie(x * gridSize, y * gridSize, gridSize);
@@ -44,8 +48,11 @@ void draw() {
     // Now go through all the griddies a second time...
     for (int j = 0; j < griddies.length; j++) {
       // QUESTION: What is this if-statement for?
+      // ANSWER: because we don't want to check a gridie with itself to see if they collide,
+      // by using this if statement we make sure that we won't do that
       if (j != i) {
         // QUESTION: What does this line check?
+        // ANSWER: it checks the griddie in the index "i" with all other griddies to see if they collide or not 
         griddies[i].collide(griddies[j]);
       }
     }

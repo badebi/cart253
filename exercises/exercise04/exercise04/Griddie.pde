@@ -35,17 +35,26 @@ class Griddie {
   void update() {
     
     // QUESTION: What is this if-statement for?
+    // ANSWER: if the energy of the a griddie is zero, so it breaks out of update() skipping the lines after
+    // so unfortunately it dies and it's not gonna come back again
     if (energy == 0) {
       return;
     }
     
     // QUESTION: How does the Griddie movement updating work?
+    // ANSWER: if we imagin a square 3 times bigger than a griddie, and we devide it to 9 equal squares (which gives us
+    // 9 square as same size as a griddie), and we imagin our griddie as the center square in this imaginary square,
+    // the griddie's next position in the next frame will be on of the other squares around it.
+    //
+    // I hope you get what I was trying to say :D
     int xMoveType = floor(random(-1,2));
     int yMoveType = floor(random(-1,2));
     x += size * xMoveType;
     y += size * yMoveType;
     
     // QUESTION: What are these if statements doing?
+    // ANSWER : they prevent the griddies to get of the frame and disappear, so they bring them back
+    // from the opposite side of the frame
     if (x < 0) {
       x += width;
     }
@@ -74,11 +83,14 @@ class Griddie {
   
   void collide(Griddie other) {
     // QUESTION: What is this if-statement for?
+    // ANSWER: if both of the griddie are dead, it breaks out of collide(Griddie other) and it won't
+    // check if they collide or not ... so they will stay dead
     if (energy == 0 || other.energy == 0) {
       return;
     }
     
     // QUESTION: What does this if-statement check?
+    // ANSWER: it checks if both of the griddies are in the same section of the grid (if they overlap)
     if (x == other.x && y == other.y) {
       // Increase this Griddie's energy
       energy += collideEnergy;
@@ -92,6 +104,7 @@ class Griddie {
   // Draw the Griddie on the screen as a rectangle
   void display() {
     // QUESTION: What does this fill line do?
+    // ANSWER; gives the griddie a color which is "fill", and oppacity which represents its energy
     fill(fill, energy); 
     noStroke();
     rect(x, y, size, size);
