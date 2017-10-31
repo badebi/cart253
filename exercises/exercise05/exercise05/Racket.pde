@@ -6,8 +6,8 @@ class Racket{
   Racket (){
     racSize = 250;
     racColor = (#ff0000);
-    racX = mouseX;
-    racY = mouseY;
+    racX = width/2;
+    racY = height/2;
   }
 void update(){
 
@@ -15,5 +15,7 @@ void update(){
 void display(){
   fill(racColor);
   ellipse (racX,racY,racSize,racSize);
+    racX = mouseX;
+    racY = mouseY;
 }
 }

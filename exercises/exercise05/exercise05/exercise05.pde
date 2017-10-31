@@ -19,3 +19,7 @@ void draw() {
   ball.display();
   
 }
+
+void mousePressed(){
+  ball.reset();
+}
