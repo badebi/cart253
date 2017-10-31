@@ -1,13 +1,21 @@
 float theta = 0;
-float size = 200;
+int initialSize = 200;
+
+
+Ball ball;
+Racket racket;
+
 void setup() {
   size(600,600);
   background(0);
-  fill(255);
+  
+  ball = new Ball (width/2,height/2,initialSize);
+  racket = new Racket ();
 }
 void draw() {
   background(0);
-  float growth = sin(theta) * (size/2);
-  ellipse(width/2,height/2,size + growth,size + growth);
-  theta += 0.08;
+  racket.display();
+  ball.update();
+  ball.display();
+  
 }
