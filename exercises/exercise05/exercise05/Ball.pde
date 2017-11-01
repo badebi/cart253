@@ -1,5 +1,5 @@
 class Ball {
-
+float theta = 0;
   float x;
   float y;
   float size;
