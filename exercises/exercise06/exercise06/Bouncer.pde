@@ -42,8 +42,8 @@ class Bouncer {
   // and checks for bouncing off the walls.
   void update(boolean tempHandIsUp) {
 
-    if (tempHandIsUp && size <= 30) {
-      size = 30;
+    if (tempHandIsUp && size <= 45) {
+      size = 45;
     }
     else {
       size -= 5;;
@@ -55,7 +55,9 @@ class Bouncer {
  
   void handleSize() {
     if (size <= 1){
-      size = random(20, 120);
+      size = random(100, 200);
+      x = random(0, width);
+      //y = random(0, height);
     }
   }
   

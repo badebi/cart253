@@ -29,7 +29,7 @@ void setup() {
   // array adding new objects to it (Bouncers in this case)
   for (int i = 0; i < bouncers.length; i++) {
     // Each Bouncer just starts with random values 
-    bouncers[i] = new Bouncer(random(0, width), random(0, height), random(-10, 10), random(-10, 10), random(20, 50), color(random(255)));
+    bouncers[i] = new Bouncer(random(0, width), random(0, height), random(-10, 10), random(-10, 10), random(20, 50), color(0,random(10,255),0));
   }
 
   // Start up the webcam
@@ -110,6 +110,7 @@ void redDetection () {
 }
 
 void matrixWorld() {
+  float greenness = random(25,255);
   image(video, 0, 0);
   loadPixels();
   for ( int x = 1; x < video.width; x++ ) {
@@ -121,9 +122,9 @@ void matrixWorld() {
       color leftPix = video.pixels[leftLoc];
       float diff = abs(brightness(pix) -  brightness(leftPix));
       if ( diff > threshold ) {
-        pixels[loc] = color(0, 42, 0, 5);
+        pixels[loc] = color(0, greenness, 0, 15);
       } else {
-        pixels[loc] = color(0, 5);
+        pixels[loc] = color(0, 15);
       }
     }
   }
