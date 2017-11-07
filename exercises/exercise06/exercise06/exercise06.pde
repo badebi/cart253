@@ -11,10 +11,12 @@ Capture video;
 // A PVector allows us to store an x and y location in a single object
 // When we create it we give it the starting x and y (which I'm setting to -1, -1
 // as a default value)
-PVector brightestPixel = new PVector(-1,-1);
+PVector reddestPixel = new PVector(-1, -1);
 
 // An array of bouncers to play with
 Bouncer[] bouncers = new Bouncer[10];
+
+
 
 // setup()
 //
@@ -27,9 +29,9 @@ void setup() {
   // array adding new objects to it (Bouncers in this case)
   for (int i = 0; i < bouncers.length; i++) {
     // Each Bouncer just starts with random values 
-    bouncers[i] = new Bouncer(random(0,width),random(0,height),random(-10,10),random(-10,10),random(20,50),color(random(255)));
+    bouncers[i] = new Bouncer(random(0, width), random(0, height), random(-10, 10), random(-10, 10), random(20, 50), color(random(255)));
   }
-  
+
   // Start up the webcam
   video = new Capture(this, 640, 480, 30);
   video.start();
@@ -47,21 +49,21 @@ void draw() {
 
   // Draw the video frame to the screen
   image(video, 0, 0);
-  
+
   // Our old friend the for-loop running through the length of an array to
   // update and display objects, in this case Bouncers.
   // If the brightness (or other video property) is going to interact with all the
   // Bouncers, it will need to happen in here.
   for (int i = 0; i < bouncers.length; i++) {
-   bouncers[i].update();
-   bouncers[i].display();
+    bouncers[i].update();
+    bouncers[i].display();
   }
-  
+
   // For now we just draw a crappy ellipse at the brightest pixel
   fill(#ff0000);
   stroke(#ffff00);
   strokeWeight(10);
-  ellipse(brightestPixel.x,brightestPixel.y,20,20);
+  ellipse(reddestPixel.x, reddestPixel.y, 20, 20);
 }
 
 // handleVideoInput
@@ -75,13 +77,12 @@ void handleVideoInput() {
     // If not, then just return, nothing to do
     return;
   }
-  
+
   // If we're here, there IS a frame to look at so read it in
   video.read();
 
-  // Start with a very low "record" for the brightest pixel
-  // so that we'll definitely find something better
-  float brightnessRecord = 0;
+
+  float record = 1000;
 
   // Go through every pixel in the grid of pixels made by this
   // frame of video
@@ -92,16 +93,12 @@ void handleVideoInput() {
       // Get the color of the pixel we're looking at
       color pixelColor = video.pixels[loc];
       // Get the brightness of the pixel we're looking at
-      float pixelBrightness = brightness(pixelColor);
-      // Check if this pixel is the brighest we've seen so far
-      if (pixelBrightness > brightnessRecord) {
-        // If it is, change the record value
-        brightnessRecord = pixelBrightness;
-        // Remember where this pixel is in the the grid of pixels
-        // (and therefore on the screen) by setting the PVector
-        // brightestPixel's x and y properties.
-        brightestPixel.x = x;
-        brightestPixel.y = y;
+      
+      float amount = dist(255, 0, 0, red(pixelColor), green(pixelColor), blue(pixelColor));
+      if (amount < record) {
+        record = amount;
+        reddestPixel.x = x;
+        reddestPixel.y = y;
       }
     }
   }
