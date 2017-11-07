@@ -16,7 +16,7 @@ PVector reddestPixel = new PVector(-1, -1);
 // An array of bouncers to play with
 Bouncer[] bouncers = new Bouncer[10];
 
-
+boolean handIsUp = false;
 
 // setup()
 //
@@ -55,7 +55,7 @@ void draw() {
   // If the brightness (or other video property) is going to interact with all the
   // Bouncers, it will need to happen in here.
   for (int i = 0; i < bouncers.length; i++) {
-    bouncers[i].update();
+    bouncers[i].update(handIsUp);
     bouncers[i].display();
   }
 
@@ -93,13 +93,15 @@ void handleVideoInput() {
       // Get the color of the pixel we're looking at
       color pixelColor = video.pixels[loc];
       // Get the brightness of the pixel we're looking at
-      
+
       float amount = dist(255, 0, 0, red(pixelColor), green(pixelColor), blue(pixelColor));
-      if (amount < record) {
+      if (red(pixelColor) > 200 && green(pixelColor) < 50 && blue(pixelColor) < 50 && amount < record) {
         record = amount;
         reddestPixel.x = x;
         reddestPixel.y = y;
       }
+      
+      handIsUp = (record != 1000);
     }
   }
 }

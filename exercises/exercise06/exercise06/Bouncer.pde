@@ -40,13 +40,25 @@ class Bouncer {
   //
   // Adds the Bouncer's current velocity to its position
   // and checks for bouncing off the walls.
-  void update() {
-    x += vx;
-    y += vy;
+  void update(boolean tempHandIsUp) {
 
-    handleBounce();
+    if (tempHandIsUp && size <= 30) {
+      size = 30;
+    }
+    else {
+      size -= 5;;
+    }
+
+    handleSize();
   }
 
+ 
+  void handleSize() {
+    if (size <= 1){
+      size = random(20, 120);
+    }
+  }
+  
   // handleBounce()
   //
   // Checks if the bouncer is overlapping a side of the window
@@ -64,7 +76,14 @@ class Bouncer {
       // Bounce on the y-axis
       vy = -vy;
     }
-
+    
+    if (dist(x,y,reddestPixel.x,reddestPixel.y) < size * 2){
+      
+      x = reddestPixel.x + size * 2;
+      y = reddestPixel.y + size * 2;
+      return;
+    }
+  
     // Make sure the Bouncer isn't off the edge
     x = constrain(x, size/2, width-size/2);
     y = constrain(y, size/2, height-size/2);
