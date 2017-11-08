@@ -1,6 +1,7 @@
 // Exercise 06
+//Ebrahim Badawi (Ebby)
 //
-// Using the webcam as input to play with Bullets
+// Using the webcam as input to play with Bullets (MATRIX SIMULATION)
 
 // Import the video library
 import processing.video.*;
@@ -16,6 +17,7 @@ PVector reddestPixel = new PVector(-1, -1);
 // An array of bouncers to play with
 Bullet[] bullets = new Bullet[20];
 
+// To know if the hand is up or not
 boolean handIsUp = false;
 
 // setup()
@@ -29,7 +31,8 @@ void setup() {
   // array adding new objects to it (Bouncers in this case)
   for (int i = 0; i < bullets.length; i++) {
     // Each Bouncer just starts with random values 
-    bullets[i] = new Bullet(random(0, width), random(0, height),1, random(200, 250), color(0,random(110,150),0));
+    // the vy will be consistant
+    bullets[i] = new Bullet(random(0, width), random(0, height), 1, random(200, 250), color(0, random(110, 150), 0));
   }
 
   // Start up the webcam
@@ -39,37 +42,34 @@ void setup() {
 
 // draw()
 //
-// Processes the frame of video, draws the video to the screen, updates the Bouncers
-// and then just draws an ellipse at the brightest pixel location. You code should
-// do something much more interesting in order to actually interact with the Bouncers.
+// Processes the frame of video, draws the video to the screen and detects the edges, updates the bullets
+// and then just draws an ellipse at the reddest pixel location.
 
 void draw() {
   // A function that processes the current frame of video
   handleVideoInput();
 
-  // Draw the video frame to the screen
-  //image(video, 0, 0);
-
   // Our old friend the for-loop running through the length of an array to
-  // update and display objects, in this case Bouncers.
-  // If the brightness (or other video property) is going to interact with all the
-  // Bouncers, it will need to happen in here.
+  // update and display objects, in this case Bullets.
+  // If the redness (or other video property) is going to interact with all the
+  // Bullets, it will need to happen in here.
   for (int i = 0; i < bullets.length; i++) {
     bullets[i].update(handIsUp);
     bullets[i].display();
   }
 
-  // For now we just draw a crappy ellipse at the brightest pixel
+  // For now we just draw a crappy ellipse at the reddest pixel
   fill(#ff0000);
   stroke(#ffff00);
-  strokeWeight(10);
+  strokeWeight(7);
   ellipse(reddestPixel.x, reddestPixel.y, 20, 20);
 }
 
 // handleVideoInput
 //
-// Checks for available video, reads the frame, and then finds the brightest pixel
-// in that frame and stores its location in brightestPixel.
+// Checks for available video, reads the frame, manipulate it and takes us to the
+// world of Matrix, and then finds the reddest pixel
+// in that frame and stores its location in reddestPixel.
 
 void handleVideoInput() {
   // Check if there's a frame to look at
@@ -95,22 +95,27 @@ void redDetection () {
       int loc = x + y * width;
       // Get the color of the pixel we're looking at
       color pixelColor = video.pixels[loc];
-      // Get the brightness of the pixel we're looking at
+      // Get the reddest of the pixel we're looking at an stores it's location
 
       float amount = dist(255, 0, 0, red(pixelColor), green(pixelColor), blue(pixelColor));
+      // this if for the accuracy of the red detection! 
+      // now because of my room's shitty lighting, I reduced the accuracy a bit ...
+      // fill free to adjust the sensitivity according your room's lighting condition.
       if (red(pixelColor) > 100 && green(pixelColor) < 50 && blue(pixelColor) < 50 && amount < record) {
         record = amount;
         reddestPixel.x = x;
         reddestPixel.y = y;
       }
-
+      // if it doesn't detect any red spot, it means the hand is not up so the bullets will continue to be fired
       handIsUp = (record != 1000);
     }
   }
 }
 
+// Simply it detects the edges and gives us a Matrix like look
 void matrixWorld() {
-  float greenness = random(25,255);
+  float greenness = random(25, 255);
+  // Draw the video frame to the screen
   image(video, 0, 0);
   loadPixels();
   for ( int x = 1; x < video.width; x++ ) {

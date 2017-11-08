@@ -1,7 +1,7 @@
-// Bouncer
+// Bullet
 //
 // A class that defines a bullet that can change it size , so it seems as if it's approaching your image
-// and if you stp it, after a couple of seconds, it falls on the ground
+// and if you stop it, after a couple of seconds, it falls on the ground
 
 class Bullet {
 
@@ -22,9 +22,10 @@ class Bullet {
   // The default fill colour of the Bouncer
   color defaultColor;
   
+  // The time passed after the bullet has stoped
   float time = 0;
 
-  // Bouncer(tempX,tempY,tempVX,tempVY,tempSize,tempDefaultColor)
+  // Bullet(tempX,tempY,tempVY,tempSize,tempDefaultColor)
   //
   // Creates a Bouncer with the provided values by remembering them.
 
@@ -39,8 +40,9 @@ class Bullet {
 
   // update()
   //
-  // Adds the Bouncer's current velocity to its position
-  // and checks for bouncing off the walls.
+  // changes the size of the bullet so we think it's going towards our image
+  // it also checks if the bullet has stoped by the player for couple of seconds, if yes
+  // it will makee the bullet fall down
   void update(boolean tempHandIsUp) {
     
     if (tempHandIsUp && size <= 45) {
@@ -59,7 +61,7 @@ class Bullet {
     handleSize();
   }
 
- 
+ // makes the firing continous and also it resets the pall position when it falls
   void handleSize() {
     if (size <= 1){
       size = random(100, 200);
@@ -72,8 +74,8 @@ class Bullet {
 
   // display()
   //
-  // Draw an ellipse in the Bouncer's location, with its size
-  // and with its fill
+  // Draw an ellipse in the Bullet's location, with its size
+  // and with its fill and stroke
   void display() {
     
     stroke(0,floor(random(25,60)),0);
