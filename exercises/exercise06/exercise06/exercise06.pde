@@ -1,6 +1,6 @@
 // Exercise 06
 //
-// Using the webcam as input to play with Bouncers.
+// Using the webcam as input to play with Bullets
 
 // Import the video library
 import processing.video.*;
@@ -14,7 +14,7 @@ Capture video;
 PVector reddestPixel = new PVector(-1, -1);
 
 // An array of bouncers to play with
-Bouncer[] bouncers = new Bouncer[10];
+Bullet[] bullets = new Bullet[20];
 
 boolean handIsUp = false;
 
@@ -27,9 +27,9 @@ void setup() {
 
   // Our old friend the for-loop used to go through the length of an
   // array adding new objects to it (Bouncers in this case)
-  for (int i = 0; i < bouncers.length; i++) {
+  for (int i = 0; i < bullets.length; i++) {
     // Each Bouncer just starts with random values 
-    bouncers[i] = new Bouncer(random(0, width), random(0, height), random(-10, 10), random(-10, 10), random(20, 50), color(0,random(10,255),0));
+    bullets[i] = new Bullet(random(0, width), random(0, height),1, random(200, 250), color(0,random(110,150),0));
   }
 
   // Start up the webcam
@@ -54,9 +54,9 @@ void draw() {
   // update and display objects, in this case Bouncers.
   // If the brightness (or other video property) is going to interact with all the
   // Bouncers, it will need to happen in here.
-  for (int i = 0; i < bouncers.length; i++) {
-    bouncers[i].update(handIsUp);
-    bouncers[i].display();
+  for (int i = 0; i < bullets.length; i++) {
+    bullets[i].update(handIsUp);
+    bullets[i].display();
   }
 
   // For now we just draw a crappy ellipse at the brightest pixel
@@ -98,7 +98,7 @@ void redDetection () {
       // Get the brightness of the pixel we're looking at
 
       float amount = dist(255, 0, 0, red(pixelColor), green(pixelColor), blue(pixelColor));
-      if (red(pixelColor) > 156 && green(pixelColor) < 50 && blue(pixelColor) < 50 && amount < record) {
+      if (red(pixelColor) > 100 && green(pixelColor) < 50 && blue(pixelColor) < 50 && amount < record) {
         record = amount;
         reddestPixel.x = x;
         reddestPixel.y = y;
