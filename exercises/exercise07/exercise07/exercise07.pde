@@ -1,10 +1,21 @@
 // Exercise 07
-//Ebrahim Badawi (Ebby)
+// Ebrahim Badawi (Ebby)
 //
 // 
 
-// Import the video library
+// Import the video and sound library
 import processing.video.*;
+
+import processing.sound.*;
+
+//
+SoundFile kick;
+SoundFile snare;
+SoundFile snare2;
+SoundFile highHat;
+
+int framesPerBeat = 20;
+
 
 // The capture object for reading from the webcam
 Capture video;
@@ -20,6 +31,11 @@ boolean handIsUp = false;
 void setup() {
   size(640, 480);
 
+  //
+  kick = new SoundFile(this, "sounds/kick.wav");
+  snare = new SoundFile(this, "sounds/snare.wav");
+  snare2 = new SoundFile(this, "sounds/snare 2.wav");
+  highHat = new SoundFile(this, "sounds/highHat.wav");
   // Start up the webcam
   video = new Capture(this, 640, 480, 30);
   video.start();
@@ -33,7 +49,14 @@ void setup() {
 void draw() {
   // A function that processes the current frame of video
   handleVideoInput();
+  handleDrums();
+
+  //
+  pushMatrix();
+  translate(video.width, 0);
+  scale(-1, 1); // You had it right!
   image(video, 0, 0);
+  popMatrix();
 
 
 
@@ -62,6 +85,28 @@ void handleVideoInput() {
   redDetection();
 }
 
+void handleDrums() {
+  boolean topLeftPad = (reddestPixel.x < width / 2 && reddestPixel.y < height / 2 && reddestPixel.x != 0 && reddestPixel.y != 0);
+  boolean botLeftPad = (reddestPixel.x < width / 2 && reddestPixel.y > height / 2);
+  boolean topRightPad = (reddestPixel.x > width / 2 && reddestPixel.y < height / 2);
+  boolean botRightPad = (reddestPixel.x > width / 2 && reddestPixel.y > height / 2);
+
+  if (frameCount % framesPerBeat == 0) {
+    if (topLeftPad) {
+      kick.play();
+    }
+       if (topRightPad) {
+      highHat.play();
+    }
+    if (botLeftPad) {
+      snare.play();
+    } 
+    if (botRightPad) {
+      snare2.play();
+    }
+  }
+}
+
 void redDetection () {
   float record = 1000;
 
@@ -81,7 +126,7 @@ void redDetection () {
       // fill free to adjust the sensitivity according your room's lighting condition.
       if (red(pixelColor) > 150 && green(pixelColor) < 50 && blue(pixelColor) < 50 && amount < record) {
         record = amount;
-        reddestPixel.x = x;
+        reddestPixel.x = width - x;
         reddestPixel.y = y;
       }
       // if it doesn't detect any red spot, it means the hand is not up so the bullets will continue to be fired
