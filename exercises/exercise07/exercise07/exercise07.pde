@@ -1,24 +1,28 @@
 // Exercise 07
 // Ebrahim Badawi (Ebby)
 //
-// 
+// in this program you grab one red object and one blue object on
+// your hands and you play drums 
+// with the red object and playing noises with the blu object
 
 // Import the video and sound library
 import processing.video.*;
-
 import processing.sound.*;
 
-//
+// our drum sounds 
 SoundFile kick;
 SoundFile snare;
 SoundFile snare2;
 SoundFile highHat;
 
+// to know that what sound is playing
 SoundFile currentSound;
 
+// to have an ocillation 
 SinOsc sine;
 
-int framesPerBeat = 20;
+// for the speed of the loop
+int framesPerBeat = 15;
 
 
 // The capture object for reading from the webcam
@@ -37,7 +41,7 @@ boolean handIsUp = false;
 void setup() {
   size(640, 480);
 
-  //
+  // giving our sound files their values 
   kick = new SoundFile(this, "sounds/kick.wav");
   snare = new SoundFile(this, "sounds/snare.wav");
   snare2 = new SoundFile(this, "sounds/snare 2.wav");
@@ -45,8 +49,8 @@ void setup() {
   // Start up the webcam
   video = new Capture(this, 640, 480, 30);
   video.start();
-  
-    // Create the sine oscillator.
+
+  // Create the sine oscillator.
   sine = new SinOsc(this);
   // Start it, ooooooooo
   sine.play();
@@ -62,17 +66,17 @@ void draw() {
   handleVideoInput();
   handleDrums();
 
-  //
+  // here we flip the video horizantally so it will be less confusing
   pushMatrix();
   translate(video.width, 0);
   scale(-1, 1);
   image(video, 0, 0);
   popMatrix();
-  
+
   // Map the bluestPixel.x to control the frequency
-  sine.freq(map(bluestPixel.x,0,width,110,880));
+  sine.freq(map(bluestPixel.x, 0, width, 110, 880));
   // Map the bluestPixel.y to control the amplitude
-  sine.amp(map(bluestPixel.y,0,height,1,0));
+  sine.amp(map(bluestPixel.y, 0, height, 1, 0));
 
 
 
@@ -82,6 +86,7 @@ void draw() {
   strokeWeight(7);
   ellipse(reddestPixel.x, reddestPixel.y, 20, 20);
 
+  // and we draw another crappy ellipse at the bluest pixel
   fill(#0000ff);
   stroke(#ffff00);
   strokeWeight(7);
@@ -108,31 +113,40 @@ void handleVideoInput() {
 }
 
 void handleDrums() {
+  // different booleans to help us locate the reddest pixel location
+  // so we devide the screen to 5 parts, one center part within which no sound
+  // will be produced, and 4 other areas in top right and left and bottom right and left,
+  // each of these areas are like a drum pad, so for example if the reddest pixel is on the top left
+  // area, it's gonna make the kick sound
+  
   boolean topLeftPad = (reddestPixel.x < width / 2 && reddestPixel.y < height / 2 && reddestPixel.x != 0 && reddestPixel.y != 0);
   boolean botLeftPad = (reddestPixel.x < width / 2 && reddestPixel.y > height / 2);
   boolean topRightPad = (reddestPixel.x > width / 2 && reddestPixel.y < height / 2);
   boolean botRightPad = (reddestPixel.x > width / 2 && reddestPixel.y > height / 2);
   boolean inCenter = (width / 2 - 50 < reddestPixel.x && reddestPixel.x < width / 2 + 50 && height /2 - 50 < reddestPixel.y && reddestPixel.y < height / 2 + 50);
 
+  // in the if statements, I tryed to have the sound play only once
+  // but it didn't turn out as interesting as I thought, so I put it back to the 
+  // looping version
   if (!inCenter) {
-  //if (frameCount % framesPerBeat == 0) {
-  if (topLeftPad && currentSound != kick) {
-    kick.play();
-    currentSound = kick;
-  }
-  if (topRightPad && currentSound != highHat) {
-    highHat.play();
-    currentSound = highHat;
-  }
-  if (botLeftPad && currentSound != snare) {
-    snare.play();
-    currentSound = snare;
-  } 
-  if (botRightPad && currentSound != snare2) {
-    snare2.play();
-    currentSound = snare2;
-  }
-  //}
+    if (frameCount % framesPerBeat == 0) {
+    if (topLeftPad /*&& currentSound != kick*/) {
+      kick.play();
+      currentSound = kick;
+    }
+    if (topRightPad /*&& currentSound != highHat*/) {
+      highHat.play();
+      currentSound = highHat;
+    }
+    if (botLeftPad /*&& currentSound != snare*/) {
+      snare.play();
+      currentSound = snare;
+    } 
+    if (botRightPad /*&& currentSound != snare2*/) {
+      snare2.play();
+      currentSound = snare2;
+    }
+    }
   } else {
     currentSound = null;
   }
@@ -161,8 +175,6 @@ void redDetection () {
         reddestPixel.x = width - x;
         reddestPixel.y = y;
       }
-      // if it doesn't detect any red spot, it means the hand is not up so the bullets will continue to be fired
-      handIsUp = (record != 1000);
     }
   }
 }
@@ -178,19 +190,17 @@ void blueDetection () {
       int loc = x + y * width;
       // Get the color of the pixel we're looking at
       color pixelColor = video.pixels[loc];
-      // Get the reddest of the pixel we're looking at an stores it's location
+      // Get the blueest of the pixel we're looking at an stores it's location
 
       float amount = dist(0, 0, 255, red(pixelColor), green(pixelColor), blue(pixelColor));
-      // this if for the accuracy of the red detection! 
-      // now because of my room's shitty lighting, I reduced the accuracy a bit ...
+      // this if for the accuracy of the blue detection! 
+      // again, now because of my room's shitty lighting, I reduced the accuracy a bit ...
       // fill free to adjust the sensitivity according your room's lighting condition.
       if (red(pixelColor) < 50 && green(pixelColor) < 50 && blue(pixelColor) > 100 && amount < record) {
         record = amount;
         bluestPixel.x = width - x;
         bluestPixel.y = y;
       }
-      // if it doesn't detect any red spot, it means the hand is not up so the bullets will continue to be fired
-      handIsUp = (record != 1000);
     }
   }
 }
