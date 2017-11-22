@@ -4,6 +4,11 @@ import sprites.*;
 import sprites.maths.*;
 import sprites.utils.*;
 
+import ddf.minim.*;
+
+// Import the video library
+import processing.video.*;
+
 // Create a Sprite for our avatar
 Sprite avatar;
 
@@ -14,7 +19,7 @@ StopWatch timer = new StopWatch();
 // How fast the avatar mores (pixels per second)
 float avatarSpeed = 50; 
 
-import ddf.minim.*;
+
 
 float avatarSize = 1;
 
@@ -23,8 +28,6 @@ AudioInput mic; // The class that lets us get at the microphone
 
 boolean isShocked = false;
 
-// Import the video library
-import processing.video.*;
 
 // The capture object for reading from the webcam
 Capture video;
@@ -35,11 +38,16 @@ Capture video;
 PVector reddestPixel = new PVector(-1, -1);
 
 void setup() {
-  size(640,480);
+  size(640, 480);
+
+  // Start up the webcam
+  video = new Capture(this, 640, 480, 30);
+  video.start();
+
   minim = new Minim(this);
   // We use minim.getLineIn() to get access to the microphone data
   mic = minim.getLineIn();
-  
+
   // Create our Sprite by providing "this", the file
   // with the spritesheet, the number of columns in the
   // sheet, the number of rows in the sheet, and the
@@ -50,45 +58,41 @@ void setup() {
   // Set the default (idle) frame sequence from the
   // sheet to animate
   avatar.setFrameSequence(1, 1);
-  
-    // Start up the webcam
-  video = new Capture(this, 640, 480, 30);
-  video.start();
 }
 
 void draw() {
   background(255);
   handleVideoInput();
-  
+
   pushMatrix();
-  translate(video.width, 0);
+  translate(video.width/2, height/2);
   scale(-1, 1);
   image(video, 0, 0);
   popMatrix();
-  
-   // Sprites library stuff!
+
+  // Sprites library stuff!
   // We get the time elapsed since the last frame (the deltaTime)
   double deltaTime = timer.getElapsedTime();
   // We update the sprites in the program based on that delta
   S4P.updateSprites(deltaTime);
   // Then we draw them on the screen
   S4P.drawSprites();
-  
+
   // Get the current level (volume) going into the microphone
   float level = mic.mix.level();
-  
-      avatar.setFrameSequence(0, 0);
-  if (level > 0.1){ 
+
+  avatar.setFrameSequence(0, 0);
+  if (level > 0.1) { 
     isShocked = true;
   }
-  if (isShocked){
+  if (isShocked) {
     avatar.setScale (avatarSize) ;
-  avatar.setFrameSequence(1, 1);
-  avatarSize = avatarSize + 0.1 ;
-  avatarSize = constrain(avatarSize,1,6);
+    avatar.setFrameSequence(1, 1);
+    avatarSize = avatarSize + 0.1 ;
+    avatarSize = constrain(avatarSize, 1, 6);
   }
 
- // For now we just draw a crappy ellipse at the reddest pixel
+  // For now we just draw a crappy ellipse at the reddest pixel
   fill(#ff0000);
   stroke(#ffff00);
   strokeWeight(7);
@@ -126,7 +130,7 @@ void redDetection () {
       // fill free to adjust the sensitivity according your room's lighting condition.
       if (red(pixelColor) > 120 && green(pixelColor) < 50 && blue(pixelColor) < 50 && amount < record) {
         record = amount;
-        reddestPixel.x = x;
+        reddestPixel.x = width - x;
         reddestPixel.y = y;
       }
     }
