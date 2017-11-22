@@ -36,6 +36,7 @@ Capture video;
 // When we create it we give it the starting x and y (which I'm setting to -1, -1
 // as a default value)
 PVector reddestPixel = new PVector(-1, -1);
+PVector bluestPixel = new PVector(-1, -1);
 
 void setup() {
   size(640, 480);
@@ -97,6 +98,12 @@ void draw() {
   stroke(#ffff00);
   strokeWeight(7);
   ellipse(reddestPixel.x, reddestPixel.y, 20, 20);
+  
+    // and we draw another crappy ellipse at the bluest pixel
+  fill(#0000ff);
+  stroke(#ffff00);
+  strokeWeight(7);
+  ellipse(bluestPixel.x, bluestPixel.y, 20, 20);
 }
 
 void handleVideoInput() {
@@ -109,6 +116,7 @@ void handleVideoInput() {
   // If we're here, there IS a frame to look at so read it in
   video.read();
   redDetection();
+  blueDetection();
 }
 
 void redDetection () {
@@ -132,6 +140,32 @@ void redDetection () {
         record = amount;
         reddestPixel.x = width - x;
         reddestPixel.y = y;
+      }
+    }
+  }
+}
+
+void blueDetection () {
+  float record = 1000;
+
+  // Go through every pixel in the grid of pixels made by this
+  // frame of video
+  for (int x = 0; x < video.width; x++) {
+    for (int y = 0; y < video.height; y++) {
+      // Calculate the location in the 1D pixels array
+      int loc = x + y * width;
+      // Get the color of the pixel we're looking at
+      color pixelColor = video.pixels[loc];
+      // Get the blueest of the pixel we're looking at an stores it's location
+
+      float amount = dist(0, 0, 255, red(pixelColor), green(pixelColor), blue(pixelColor));
+      // this if for the accuracy of the blue detection! 
+      // again, now because of my room's shitty lighting, I reduced the accuracy a bit ...
+      // fill free to adjust the sensitivity according your room's lighting condition.
+      if (red(pixelColor) < 50 && green(pixelColor) < 50 && blue(pixelColor) > 100 && amount < record) {
+        record = amount;
+        bluestPixel.x = width - x;
+        bluestPixel.y = y;
       }
     }
   }
