@@ -1,3 +1,6 @@
+// Final Project
+// by Ebarahim Badawi (Ebby)
+
 // Import the Sprites library (you need to install
 // it if you don't have it)
 import sprites.*;
@@ -38,8 +41,14 @@ Capture video;
 PVector reddestPixel = new PVector(-1, -1);
 PVector bluestPixel = new PVector(-1, -1);
 
+PImage newspaper;
+
+int newsPaperY = 580;
+
 void setup() {
   size(640, 480);
+
+  newspaper = loadImage ("newspaper2.png");
 
   // Start up the webcam
   video = new Capture(this, 640, 480, 30);
@@ -62,8 +71,11 @@ void setup() {
 }
 
 void draw() {
-  background(255);
+  background(125);
+
   handleVideoInput();
+
+
 
   pushMatrix();
   translate(video.width/2, height/2);
@@ -72,6 +84,8 @@ void draw() {
   popMatrix();
 
   handleAnimation();
+
+  image (newspaper, width/2, newsPaperY );
 
   // For now we just draw a crappy ellipse at the reddest pixel
   fill(#ff0000);
@@ -112,7 +126,7 @@ void handleAnimation() {
   float level = mic.mix.level();
 
   avatar.setFrameSequence(0, 0);
-  
+
   // If the avatar goes off the left or right
   // wrap it around
   if (avatar.getX() > width) {
@@ -120,19 +134,26 @@ void handleAnimation() {
   } else if (avatar.getX() < 0) {
     avatar.setX(avatar.getX() + width);
   }
-  
-   avatar.setVelXY (-100,0);
-   
+
+  avatar.setVelXY (-100, 0);
+
+  //float velX = map(level,-100, 0,0,0.5);
+
+  //if (level > 0.06) {
+  // avatar.setVelXY (velX, 0);
+  //}
   if (level > 0.1) { 
     isShocked = true;
   }
   if (isShocked) {
-    
+
     avatar.setScale (avatarSize) ;
     avatar.setFrameSequence(1, 1);
     avatarSize = avatarSize + 0.1 ;
     avatarSize = constrain(avatarSize, 1, 6);
-    avatar.setVelXY (0,0);
+    avatar.setVelXY (0, 0);
+    newsPaperY += 5;
+    newsPaperY = constrain(newsPaperY, 580, 780);
   }
 }
 void redDetection () {
@@ -186,3 +207,53 @@ void blueDetection () {
     }
   }
 }
+
+//void colorDetection (String colorToDetect) {
+//  float record = 1000;
+//  float r = 0;
+//  float g = 0;
+//  float b = 0;
+//  boolean sensitivity = false;
+
+//  // Go through every pixel in the grid of pixels made by this
+//  // frame of video
+//  for (int x = 0; x < video.width; x++) {
+//    for (int y = 0; y < video.height; y++) {
+//      // Calculate the location in the 1D pixels array
+//      int loc = x + y * width;
+//      // Get the color of the pixel we're looking at
+//      color pixelColor = video.pixels[loc];
+//      // Get the blueest of the pixel we're looking at an stores it's location
+
+//      float amount = dist(r, g, b, red(pixelColor), green(pixelColor), blue(pixelColor));
+
+//      if (colorToDetect == "red") {
+//        r = 255;
+//        g = 0;
+//        b = 0;
+//        sensitivity = red(pixelColor) > 100 && green(pixelColor) < 50 && blue(pixelColor) < 50 && amount < record;
+//      }
+//      if (colorToDetect == "blue") {
+//        r = 0;
+//        g = 0;
+//        b = 255;
+//        sensitivity = red(pixelColor) < 50 && green(pixelColor) < 50 && blue(pixelColor) > 100 && amount < record;
+//      }
+//      if (colorToDetect == "green") {
+//        r = 0;
+//        g = 255;
+//        b = 0;
+//        sensitivity = red(pixelColor) < 50 && green(pixelColor) > 100 && blue(pixelColor) < 50 && amount < record;
+//      }
+
+//      // this if for the accuracy of the blue detection! 
+//      // again, now because of my room's shitty lighting, I reduced the accuracy a bit ...
+//      // fill free to adjust the sensitivity according your room's lighting condition.
+//      if (sensitivity) {
+//        record = amount;
+//        bluestPixel.x = width - x;
+//        bluestPixel.y = y;
+//      }
+//    }
+//  }
+//} 
