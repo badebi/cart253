@@ -21,9 +21,6 @@ StopWatch timer = new StopWatch();
 
 // How fast the avatar mores (pixels per second)
 float avatarSpeed = 50; 
-
-
-
 float avatarSize = 1;
 
 Minim minim;
@@ -35,15 +32,13 @@ boolean isShocked = false;
 // The capture object for reading from the webcam
 Capture video;
 
-// A PVector allows us to store an x and y location in a single object
-// When we create it we give it the starting x and y (which I'm setting to -1, -1
-// as a default value)
-PVector reddestPixel = new PVector(-1, -1);
-PVector bluestPixel = new PVector(-1, -1);
+ColorDetector redDetector;
+ColorDetector greenDetector;
+ColorDetector blueDetector;
 
 PImage newspaper;
 
-int newsPaperY = 580;
+float newsPaperY = 580;
 
 void setup() {
   size(640, 480);
@@ -53,6 +48,10 @@ void setup() {
   // Start up the webcam
   video = new Capture(this, 640, 480, 30);
   video.start();
+
+  redDetector = new ColorDetector("red", true);
+  blueDetector = new ColorDetector("blue", true);
+
 
   minim = new Minim(this);
   // We use minim.getLineIn() to get access to the microphone data
@@ -74,30 +73,17 @@ void draw() {
   background(125);
 
   handleVideoInput();
-
-
-
-  pushMatrix();
-  translate(video.width/2, height/2);
-  scale(-1, 1);
-  //image(video, 0, 0);
-  popMatrix();
-
+  
+  redDetector.detect();
+  blueDetector.detect();
+  
   handleAnimation();
 
   image (newspaper, width/2, newsPaperY );
+  newsPaperY = 300 + blueDetector.brightestPixel.y;
 
-  // For now we just draw a crappy ellipse at the reddest pixel
-  fill(#ff0000);
-  stroke(#ffff00);
-  strokeWeight(7);
-  ellipse(reddestPixel.x, reddestPixel.y, 20, 20);
-
-  // and we draw another crappy ellipse at the bluest pixel
-  fill(#0000ff);
-  stroke(#ffff00);
-  strokeWeight(7);
-  ellipse(bluestPixel.x, bluestPixel.y, 20, 20);
+  blueDetector.display();
+  redDetector.display();
 }
 
 void handleVideoInput() {
@@ -109,8 +95,13 @@ void handleVideoInput() {
 
   // If we're here, there IS a frame to look at so read it in
   video.read();
-  redDetection();
-  blueDetection();
+  
+  pushMatrix();
+  translate(video.width/2, height/2);
+  scale(-1, 1);
+  //image(video, 0, 0);
+  popMatrix();
+
 }
 
 void handleAnimation() {
@@ -146,7 +137,6 @@ void handleAnimation() {
     isShocked = true;
   }
   if (isShocked) {
-
     avatar.setScale (avatarSize) ;
     avatar.setFrameSequence(1, 1);
     avatarSize = avatarSize + 0.1 ;
@@ -156,104 +146,3 @@ void handleAnimation() {
     newsPaperY = constrain(newsPaperY, 580, 780);
   }
 }
-void redDetection () {
-  float record = 1000;
-
-  // Go through every pixel in the grid of pixels made by this
-  // frame of video
-  for (int x = 0; x < video.width; x++) {
-    for (int y = 0; y < video.height; y++) {
-      // Calculate the location in the 1D pixels array
-      int loc = x + y * width;
-      // Get the color of the pixel we're looking at
-      color pixelColor = video.pixels[loc];
-      // Get the reddest of the pixel we're looking at an stores it's location
-
-      float amount = dist(255, 0, 0, red(pixelColor), green(pixelColor), blue(pixelColor));
-      // this if for the accuracy of the red detection! 
-      // now because of my room's shitty lighting, I reduced the accuracy a bit ...
-      // fill free to adjust the sensitivity according your room's lighting condition.
-      if (red(pixelColor) > 120 && green(pixelColor) < 50 && blue(pixelColor) < 50 && amount < record) {
-        record = amount;
-        reddestPixel.x = width - x;
-        reddestPixel.y = y;
-      }
-    }
-  }
-}
-
-void blueDetection () {
-  float record = 1000;
-
-  // Go through every pixel in the grid of pixels made by this
-  // frame of video
-  for (int x = 0; x < video.width; x++) {
-    for (int y = 0; y < video.height; y++) {
-      // Calculate the location in the 1D pixels array
-      int loc = x + y * width;
-      // Get the color of the pixel we're looking at
-      color pixelColor = video.pixels[loc];
-      // Get the blueest of the pixel we're looking at an stores it's location
-
-      float amount = dist(0, 0, 255, red(pixelColor), green(pixelColor), blue(pixelColor));
-      // this if for the accuracy of the blue detection! 
-      // again, now because of my room's shitty lighting, I reduced the accuracy a bit ...
-      // fill free to adjust the sensitivity according your room's lighting condition.
-      if (red(pixelColor) < 50 && green(pixelColor) < 50 && blue(pixelColor) > 100 && amount < record) {
-        record = amount;
-        bluestPixel.x = width - x;
-        bluestPixel.y = y;
-      }
-    }
-  }
-}
-
-//void colorDetection (String colorToDetect) {
-//  float record = 1000;
-//  float r = 0;
-//  float g = 0;
-//  float b = 0;
-//  boolean sensitivity = false;
-
-//  // Go through every pixel in the grid of pixels made by this
-//  // frame of video
-//  for (int x = 0; x < video.width; x++) {
-//    for (int y = 0; y < video.height; y++) {
-//      // Calculate the location in the 1D pixels array
-//      int loc = x + y * width;
-//      // Get the color of the pixel we're looking at
-//      color pixelColor = video.pixels[loc];
-//      // Get the blueest of the pixel we're looking at an stores it's location
-
-//      float amount = dist(r, g, b, red(pixelColor), green(pixelColor), blue(pixelColor));
-
-//      if (colorToDetect == "red") {
-//        r = 255;
-//        g = 0;
-//        b = 0;
-//        sensitivity = red(pixelColor) > 100 && green(pixelColor) < 50 && blue(pixelColor) < 50 && amount < record;
-//      }
-//      if (colorToDetect == "blue") {
-//        r = 0;
-//        g = 0;
-//        b = 255;
-//        sensitivity = red(pixelColor) < 50 && green(pixelColor) < 50 && blue(pixelColor) > 100 && amount < record;
-//      }
-//      if (colorToDetect == "green") {
-//        r = 0;
-//        g = 255;
-//        b = 0;
-//        sensitivity = red(pixelColor) < 50 && green(pixelColor) > 100 && blue(pixelColor) < 50 && amount < record;
-//      }
-
-//      // this if for the accuracy of the blue detection! 
-//      // again, now because of my room's shitty lighting, I reduced the accuracy a bit ...
-//      // fill free to adjust the sensitivity according your room's lighting condition.
-//      if (sensitivity) {
-//        record = amount;
-//        bluestPixel.x = width - x;
-//        bluestPixel.y = y;
-//      }
-//    }
-//  }
-//} 
