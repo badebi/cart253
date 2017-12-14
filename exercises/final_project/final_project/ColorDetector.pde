@@ -1,3 +1,5 @@
+//_________________________________________________________________________________
+
 class ColorDetector {
   float record;
   float r;
@@ -17,13 +19,15 @@ class ColorDetector {
 
   int threshold;
 
+  //_________________________________________________________________________________
+
   ColorDetector (String _detectColor, boolean _display, String _displayType) {
     colorToDetect = _detectColor;
     display = _display;
     displayType = _displayType;
     lerpX = 0;
     lerpY = 0;
-    threshold = 87;
+    threshold = 80;
     if (_detectColor == "red") {
       r = 255;
       g = 0;
@@ -41,6 +45,8 @@ class ColorDetector {
     }
     sensitivity = false;
   }
+
+  //_________________________________________________________________________________
 
   void detect () {
     if (blueDetector.lerpY < height / 3 || redDetector.lerpY > blueDetector.lerpY ) {
@@ -76,11 +82,11 @@ class ColorDetector {
         // again, now because of my room's shitty lighting, I reduced the accuracy a bit ...
         // fill free to adjust the sensitivity according your room's lighting condition.
         if (sensitivity) {
-
-          stroke(255);
-          strokeWeight(1);
-          point(width - x, y);
-
+          if (display) {
+            stroke(r, g, b);
+            strokeWeight(3);
+            point(width - x, y);
+          }
           record = difAmount;
           brightestPixel.x = width - x;
           brightestPixel.y = y;
@@ -88,10 +94,11 @@ class ColorDetector {
       }
     }
 
+    lerpX = lerp(lerpX, brightestPixel.x, 0.1);
+    lerpY = lerp(lerpY, brightestPixel.y, 0.1);
+
     if (display) {
       // For now we just draw a crappy ellipse at the reddest pixel
-      lerpX = lerp(lerpX, brightestPixel.x, 0.1);
-      lerpY = lerp(lerpY, brightestPixel.y, 0.1);
       stroke(r, g, b);
       strokeWeight(3);
       fill(r, g, b);
@@ -102,6 +109,8 @@ class ColorDetector {
       }
     }
   }
+
+  //_________________________________________________________________________________
 
   void keyPressed() {
     if (keyCode == DOWN) {
