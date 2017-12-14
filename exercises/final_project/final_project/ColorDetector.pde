@@ -1,4 +1,4 @@
-//_________________________________________________________________________________
+//_________________________________________________________________________________properties
 
 class ColorDetector {
   float record;
@@ -19,7 +19,7 @@ class ColorDetector {
 
   int threshold;
 
-  //_________________________________________________________________________________
+  //_________________________________________________________________________________ ColorDetector
 
   ColorDetector (String _detectColor, boolean _display, String _displayType) {
     colorToDetect = _detectColor;
