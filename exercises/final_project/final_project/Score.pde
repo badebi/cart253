@@ -10,7 +10,7 @@ class Score {
   int comboCounter;
   int comboCoefficient;
 
-  //_________________________________________________________________________________
+  //_________________________________________________________________________________Score()
 
   Score() {
     highScore = 0;
@@ -20,9 +20,18 @@ class Score {
     score = 0;
   }
 
-  //_________________________________________________________________________________
+  //_________________________________________________________________________________display()
 
   void display() {
+    if (comboCoefficient > 1) {
+      fill(random(0, 255), random(0, 255), random(0, 255));
+      textFont(myNiceShadedFont); // Use the new font
+      textSize(22); // Font size
+      textAlign(CENTER, BOTTOM); // Center align both horizontally and vertically
+      textLeading(28); // Line height for text
+      text("combo "+ comboCoefficient +"x", 533, animation.lerpNY - height / 2 + 15);
+    }
+
     if (score < -14) {
       gameStage= "gameover";
     }
@@ -45,7 +54,7 @@ class Score {
     text(score, textXPosision, animation.lerpNY - height / 2 + 36);
   }
 
-  //_________________________________________________________________________________
+  //_________________________________________________________________________________addPoint()
 
   void addPoint() {
     if (comboCounter % 5 == 0 && comboCounter != 0) {
@@ -60,7 +69,7 @@ class Score {
     comboCounter ++;
   }
 
-  //_________________________________________________________________________________
+  //_________________________________________________________________________________removePoint()
 
   void removePoint() {
     score --;
@@ -68,7 +77,7 @@ class Score {
     comboCoefficient = 1;
   }
 
-  //_________________________________________________________________________________
+  //_________________________________________________________________________________updateHighScore()
 
   void updateHighScore() {
     if (score > highScore) {
@@ -80,7 +89,7 @@ class Score {
     }
   }
 
-  //_________________________________________________________________________________
+  //_________________________________________________________________________________displayHighScore()
 
   void displayHighScore() {
     fill(255, 0, 0);
@@ -92,7 +101,7 @@ class Score {
     //println(width - mouseX, height - mouseY);
   }
 
-  //_________________________________________________________________________________
+  //_________________________________________________________________________________reset()
 
   void reset() {
     score = 0;

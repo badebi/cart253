@@ -1,57 +1,82 @@
-// Final Project
+// S.SH.OUT O.P. (a.k.a Scare the SHit OUT Of People) #Final_Project
 // by Ebarahim Badawi (Ebby)
 
-// Import the Sprites library (you need to install
-// it if you don't have it)
+// This game takes you to a park in a such beautiful day ... you sit on a bench
+// and enjoy watching people passing by. you get bored, take your newspaper out
+// and start shouting to scare the sh*t out of people, then you hide behind the
+// newspaper so people can not find you! SO SIMPLE
+
+// This game uses a redDetection and blueDetection, so please, before runnig it
+// make sure that you're not wearing anything red or blue from waist up. Also,
+// if the game developer "EBBY" has not prepare you with the stuff you need to 
+// play this game, make sure that you have 1) a newspaper with two holes on it
+// for your eyes and a BLUE point or a blue bar on the top of it (facing the 
+// webcam) and 2) a RED point one your forehead.
+//
+// If you have problems to equip yourself for playing this game, grab your phone
+// right now and call +1 (438) 880-2080, to get the especial SSHOUT OP package 
+// before chritmas.
+//
+// ENJOY!
 
 //_________________________________________________________________________________
 
+// Importing the liberaries we need
 import sprites.*;
 import sprites.maths.*;
 import sprites.utils.*;
 import ddf.minim.*;
 import processing.video.*;
 
-
-
+// Creat a minim to be able to use sound
 Minim minim;
-AudioInput mic; // The class that lets us get at the microphone
+// The class that lets us get at the microphone
+AudioInput mic; 
 
+// Create a Score for managing the score
 Score score;
+// Create an animation where all the magic happens
 Animation animation;
-// Create a Sprite for our avatar
+// Create Sprites for our background, avatar and newspaper
 Sprite avatar;
 Sprite background;
 Sprite newspaperSprite;
+// Creat two color detectors, red and blue
+ColorDetector redDetector;
+ColorDetector blueDetector;
 
+// To know whichstage we are at during the game and what stage we're coming from
 String gameStage;
 String prvGameStage;
 
-PFont    myDopeFont;
-PFont    myNiceShadedFont;
+// Two new fonts which are gonna be used in the game
+PFont myDopeFont;
+PFont myNiceShadedFont;
 
+// There are two setting pages in the sprite so I made a variable just for that
+// to be able to swith between them easily
 int settingPage = 35;
-
-ArrayList<Sprite> thoseGuys = new ArrayList<Sprite>();
 
 // Create a StopWatch to keep track of time passing
 // (So we know how fast the animation should run.)
 StopWatch timer = new StopWatch();
 
-
 // The capture object for reading from the webcam
 Capture video;
 
-ColorDetector redDetector;
-ColorDetector blueDetector;
-
+// A variable to know if the player is hidden behinde the newspaper or not
 boolean playerIsHidden = false;
 
+// To know if thw game is over or not
 boolean gameIsOver = false;
 
+// This is to switch between the two color detectors using shift key while 
+// adjusting them.
 int thresholdSwitch = 0;
 
-//_________________________________________________________________________________
+//_________________________________________________________________________________setup()
+
+// The basic setup of the game 
 
 void setup() {
   size(640, 480);

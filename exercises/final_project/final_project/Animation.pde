@@ -43,8 +43,7 @@ class Animation {
     prvGameStage = null;
     gameStage = "menu";
     isNewAvatar = false;
-    micThreshold = 0.1;
-    //newspaper = loadImage ("newspaper2.png");
+    micThreshold = 0.35;
     newspaperY = 580;
     lerpNY = 0;
     thatGuyIsShocked = false;
@@ -52,17 +51,7 @@ class Animation {
     avatarSize = 1;
     // Set the avatar's position on screen
     background.setXY(width/2, height/2);
-    //avatar.setXY(width/2, height/2);
-    //newspaperSprite.setXY(width/2, height/2);
-    // Set the default (idle) frame sequence from the
-    // sheet to animate
-    //avatar.setFrameSequence(1, 1);
-
-    //background.setZorder(1);
-    //avatar.setZorder(10);
-    //newspaperSprite.setZorder(100);
     background.setFrameSequence(0, 11, 0.25);
-    //avatar.setFrameSequence(0, 0);
   }
 
   //_________________________________________________________________________________handleAnimation()
@@ -116,7 +105,7 @@ class Animation {
       textAlign(CENTER, CENTER); // Center align both horizontally and vertically
       textLeading(28); // Line height for text
       text("SettinG", 449, 449);
-      println(mouseX, mouseY);
+
 
       if (level > micThreshold) {
         prvGameStage = "menu";
@@ -240,7 +229,7 @@ class Animation {
     textSize(64); // Font size
     textAlign(CENTER, CENTER); // Center align both horizontally and vertically
     textLeading(28); // Line height for text
-    text("SettinG", width / 2, height / 2);
+    text("Game Over", width / 2, height / 2);
 
     avatar.setVelXY (0, 0);
     avatar.setScale (avatarSize) ;
