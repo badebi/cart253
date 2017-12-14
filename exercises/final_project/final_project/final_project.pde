@@ -106,8 +106,8 @@ void setup() {
   video = new Capture(this, 640, 480, 30);
   video.start();
 
-  // Start detecting the colors, it gets (String: color to detect "red" "green" or "blue"
-  // , boolean: to show or not to show on screen, String: display type "line" or "ellipse" 
+  // Start detecting the colors, it gets (String: color to detect "red" "green" or "blue",
+  // boolean: to show or not to show on screen, String: display type "line" or "ellipse" 
   redDetector = new ColorDetector("red", false, "line");
   blueDetector = new ColorDetector("blue", false, "line");
 

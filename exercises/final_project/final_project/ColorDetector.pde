@@ -139,10 +139,10 @@ class ColorDetector {
 
   //_________________________________________________________________________________void keyPressed()
 
-// void keyPressed()
-//
-// It's called by keyPressed() in the main program, if the game is in the setting stage or display's
-// value is true
+  // void keyPressed()
+  //
+  // It's called by keyPressed() in the main program, if the game is in the setting stage or display's
+  // value is true
 
   void keyPressed() {
     if (keyCode == DOWN) {
