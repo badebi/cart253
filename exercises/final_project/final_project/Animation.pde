@@ -317,6 +317,8 @@ class Animation {
   // the newspaper, so here we have the moment of realization for thatGuy ... he runes right
   // to the player's face to smash his face, and that's what this method does.
   // it also updates the highscore before reseting the game.
+  // It's also called when the score reaches to -15, so suddenly thatGuy runs towards you 
+  // without any reason to show you that you're not the only crazy one in the world. 
 
   void gameOver() {
     prvGameStage = "start";
@@ -352,13 +354,13 @@ class Animation {
     newspaperSprite.setY(lerpNY);
     newspaperY = constrain(newspaperY, 580, 780);
     newspaperRestartY = newspaperY;
-    
+
     // display the score
     score.display();
     // update the highscore
     score.updateHighScore();
 
-    // if the player shouts., restart the game
+    // if the player shouts, restart the game
     if (level > micThreshold ) {
       prvGameStage = "gameover";
       gameStage = "restart";
@@ -367,18 +369,29 @@ class Animation {
 
   //_________________________________________________________________________________reStart()
 
+  // void reStart()
+  //
+  // It's called when the player yells at the game over stage.
+  // It brings the newspaper back in and resets the score and leads us to the menu.
+
   void reStart() {
-    //don't get upset ... grab your newspaper and start over
+    // Don't get upset ... grab your newspaper and start over
+    // Animate the flipping the newspaper's page
     if (newspaperSprite.getFrame() > 25) {
       newspaperSprite.setFrameSequence(34, 25, 0.1);
     } else {
+      // don't wanna see thatGuy now
       avatar.setVisible(false);
       newspaperIsOpen = false;
+      // reset the score
       score.reset();
       newspaperSprite.setFrame(8);
+      // Bring up the newspaper up on its first position
       newspaperRestartY -= 5 ;
       newspaperSprite.setXY(width/2, newspaperRestartY + height/2);
+      // reset the speed difficulty
       speedDifficulty = 0;
+      // when the newspaper reaches to the position at which it should be, lead us to the menu 
       if (newspaperRestartY < 5) {
         newspaperRestartY = 0;
         newspaperSprite.setFrameSequence(8, 17, 0.1);
@@ -390,19 +403,35 @@ class Animation {
 
   //_________________________________________________________________________________avatarReset()
 
+  // void avatarReset()
+  //
+  // It's called 1) right before the game starts, in the transition stage, 2) whenever an avatar
+  // gets shoked and dies, 3) whenever an avatar leaves the frame without getting scared
+  // Basically it sets the initial values for each avatar and places them randomly on the screen
+  // with different attributes.
+
   void avatarReset() {
+    // first of all, kill thatGuy
     avatar.setDead(true);
+    // He is not shoked anymore and his not panicking, so
     counter = 0;
     thatGuyIsShocked = false;
 
+    // randomly choose a position for next guy's Y
     newAvatarY = random(height/2, height - 128);
 
+    // them, according to it's Y location, give him his speed, his size, and his sensitivity.
+    // so the higher the Y, the closer he will be to the player, so he's gonna be more bigger,
+    // more sensitive and more faster.
     avatarSize = map(newAvatarY, height/2, height -100, 0.8, 3.5);
     avatarSpeed = map(newAvatarY, height/2, height -100, 50, 250);
     thatGuysSensitivity = map(newAvatarY, 200, height -100, 0.7, 0.1);
+    // choose a random number for his panicking time
     thatGuysPanickingTime = random(60, 140);
 
-
+    // choose randomly from which side should he come, then manage his animation accordingly
+    // randomSingom(float _x)
+    // gives you a random positive or negative form of a number
     float velAvatar = randomSignum(avatarSpeed);
     if (velAvatar > 0) {
       avatar.setFrameSequence(2, 3, 0.1);
@@ -412,23 +441,29 @@ class Animation {
       newAvatarX = width;
     }
 
-
+    // then, give all those attributes that you've generated to the new avatar
     avatar.setScale(avatarSize);
     avatar.setVelXY(velAvatar + (speedDifficulty * velAvatar), 0);
     avatar.setXY(newAvatarX, newAvatarY);
+    // and bring him back to life
     avatar.setDead(false);
+    // a new avatar has been generated 
     isNewAvatar = true;
   }
 
   //_________________________________________________________________________________handleNewAvatar()
 
+  // void handleNewAvatar()
+  //
+  // it's called in the handleAnimation every frame (if the avatar is not the first avatar), and it
+  // checks if thatGuy lives the frame or not ... if yes, it removes a poit from the player's score
+  // and makes the game harder for him by adding to avatars' speed each time they leave the frame.
+
   void handleNewAvatar() {
-    //If the avatar goes off the left or right
-    //wrap it around
+    // If the avatar goes off the left or right, remove a point, add to next avatar's speed, and call
+    // avatarReset() to generate the next avatar
     if (avatar.getX() - 64 > width || avatar.getX() + 64 < 0) {
-      //score--
       score.removePoint();
-      //harder
       speedDifficulty += 0.1;
       speedDifficulty *= 2;
       speedDifficulty = constrain(speedDifficulty, 0, 12);
@@ -438,24 +473,35 @@ class Animation {
 
   //_________________________________________________________________________________handleNewspaper()
 
+  // void handleNewspaper()
+  //
+  // It's calles each frame in the start stage and it updates the newspaper's location based on
+  // the bluest pixel location that webcam sees.
+
   void handleNewspaper() {
+    // Animate it to the idleal page 
     if (newspaperSprite.getFrame() != 34) {
       newspaperSprite.setFrameSequence(17, 34, 0.1);
     } else {
+      // when it's on the ideal frame of the sprite sheet, stop it 
       newspaperSprite.setFrame(34);
       newspaperIsOpen = true;
+
+      // make it move smooth (by using lerp) and move it according to the actual newspaper's movements
+      // in the real world.
       lerpNY = lerp(lerpNY, newspaperY, 0.1);
       newspaperY = height/2 + blueDetector.brightestPixel.y;
       newspaperSprite.setY(lerpNY);
 
-
+      // If the newspaper in covered more than 23 of the page, scale it and bring it closer so the
+      // player is covered completely and be able to peek the avatars through the holes.
+      // else, rescale the newspaper to its actual size
       if (blueDetector.lerpY < height/3) {      
         newspaperSprite.setScale(newspaperSprite.getScale() + 0.1);
         if (newspaperSprite.getScale() > 2) {
           newspaperSprite.setScale(2);
         }
       } else if (blueDetector.lerpY > height/3) {
-
         newspaperSprite.setScale(newspaperSprite.getScale() - 0.1);
         if (newspaperSprite.getScale() < 1) {
           newspaperSprite.setScale(1);
@@ -465,13 +511,21 @@ class Animation {
     }
   }
 
-  //_________________________________________________________________________________randomSingum()
+  //_________________________________________________________________________________randomSingum(float _x)
+
+  // float randomSignum (float _x)
+  //
+  // gives you a random positive or negative form of a number
 
   float randomSignum (float _x) {
     return _x * ((int)random(2) * 2 - 1);
   }
 
   //_________________________________________________________________________________goToCenter()
+
+  // void goToCenter()
+  //
+  // gets thatGuy's distance from the center, and moves him to the center 
 
   void goToCenter() {
     if (dist(width/2, height/2, (int)avatar.getX(), (int)avatar.getY()) > 5) {
@@ -489,6 +543,10 @@ class Animation {
   }
 
   //_________________________________________________________________________________mouseClicked()
+
+  // void mouseClicked()
+  //
+  // goes to the menu stage and setting stage back and forth (if you click on the button)
 
   void mouseClicked() {
     if (gameStage == "menu") {
